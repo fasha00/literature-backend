@@ -16,12 +16,12 @@ pipeline {
         stage ('set remote and pull') {
             steps {
                 sshagent(credentials: ["${key}"]) {
-		    sh """ssh -o StrictHostKeyChecking=no ${ip} << EOF
+		    sh """ssh -o StrictHostKeyChecking=no ${ip} << PWD
                     cd ${dir}
                     git remote add ${rname} ${rurl} || git remote set-url ${rname} ${rurl}
                     git pull ${rname} ${branch}
 		    exit
-                    EOF"""
+                    PWD"""
                 }
             }
         }
