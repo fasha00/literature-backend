@@ -44,7 +44,6 @@ pipeline {
                     sh """
                           ssh -o StrictHostkeyChecking=no ${server} << EOF
                           cd ${dir}
-                          docker compose -f ${compose} down
                           docker compose -f ${compose} up -d
 			  exit
                           EOF"""
