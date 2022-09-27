@@ -15,7 +15,7 @@ pipeline {
         stage ('set remote and pull') {
             steps {
                 sshagent(credentials: ["${key}"]) {
-		    sh """ssh -o StrictHostkeyChecking=no ${server} << EOF
+		    sh """ssh -T -o StrictHostkeyChecking=no ${server} << EOF
                     cd ${dir}
                     git remote add ${rname} ${rurl} || git remote set-url ${rname} ${rurl}
                     git pull ${rname} ${branch}
