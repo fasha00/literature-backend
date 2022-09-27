@@ -16,13 +16,12 @@ pipeline {
         stage('set remote and pull') {
             steps {
                 sshagent(credentials: ["${key}"]) {
-                    sh """
-                        ssh -o StrictHostkeyChecking=no ${server} << EOF
-                        cd ${dir}
-                        git remote add ${rname} ${rurl} || git remote set-url ${rname} ${rurl}
-                        git pull ${rname} ${branch}
-                        EOF
-                    """
+		    sh """
+                          ssh -o StrictHostkeyChecking=no ${server} << EOF
+                          cd ${dir}
+                          git remote add ${rname} ${rurl} || git remote set-url ${rname} ${rurl}
+                          git pull ${rname} ${branch}
+                          EOF"""
                 }
             }
         }
@@ -57,11 +56,11 @@ pipeline {
         stage('Push Docker Hub') {
             steps {
                 sshagent ([key]) {
-			         sh """
-				            ssh -o StrictHostkeyChecking=no ${server} << EOF
-				            docker image push ${duser}/${image}
-				            EOF
-			         """
+                   sh """
+	                 ssh -o StrictHostkeyChecking=no ${server} << EOF
+	                 docker image push ${duser}/${image}
+	                 EOF
+	             """
 		      }
             }
         }
