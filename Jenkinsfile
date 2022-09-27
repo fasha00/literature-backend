@@ -71,8 +71,9 @@ pipeline {
         stage ('Send Success Notification') {
             steps {
                 sh """
-                         curl -X POST 'https://api.telegram.org/bot${TOKEN}/sendMessage' -d \
-		       `chat_id=${chatid}&text=Build Number #${env.BUILD_NUMBER} literature success !'
+                        curl -X POST 'https://api.telegram.org/bot${TOKEN}/sendMessage' -d \
+		      `chat_id=${chatid}&text=Build Number #${env.BUILD_NUMBER} literature success !'
+		      EOF
                   """
             }
         }
