@@ -16,11 +16,11 @@ pipeline {
             steps {
                 sshagent(credentials: ["${sshkeyid}"]) {
                     sh """
-                        ssh -l ${username} ${ip} <<pwd
+                        ssh -l ${username} ${ip} <<PWD
                         cd ${workdir}
                         git remote add ${remotename} ${remoteurl} || git remote set-url ${remotename} ${remoteurl}
                         git pull ${remotename} ${branch}
-                        pwd
+                        PWD
                     """
                 }
             }
