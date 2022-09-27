@@ -1,84 +1,73 @@
-def branch = "master"
-def remoteurl = "https://github.com/yuuzukatsu/dumbflix-backend.git"
-def remotename = "jenkins"
-def workdir = "~/dumbflix-backend/"
-def ip = "103.183.74.5"
-def username = "fasha1"
-def imagename = "dumbflix-backend"
-def dockerusername = "yuuzukatsu"
-def sshkeyid = "app"
+def key = "app"
+def server = "fasha1@103.183.74.5"
+def dir = "literature-backend"
+def branch = "Production"
+def image = "fasha00/literature-be"
+def remote = "origin1"
+def compose = "be.yaml"
+def rname = "origin1"
+def rurl = "git@github.com:fasha00/literature-backend.git"
+def duser = "fasha00"
 
 pipeline {
     agent any
-
-    stages {
-        stage('Pull From Backend Repo') {
+    stages{
+        stage ('set remote and pull') {
             steps {
-                sshagent(credentials: ["${sshkeyid}"]) {
-                    sh """
-                        ssh -l ${username} ${ip} <<PWD
-                        cd ${workdir}
-                        git remote add ${remotename} ${remoteurl} || git remote set-url ${remotename} ${remoteurl}
-                        git pull ${remotename} ${branch}
-                        PWD
-                    """
+                sshagent(credentials: ["${key}"]) {
+		    sh """ssh -o StrictHostkeyChecking=no ${server} << EOF
+                    cd ${dir}
+                    git remote add ${rname} ${rurl} || git remote set-url ${rname} ${rurl}
+                    git pull ${rname} ${branch}
+		    exit
+                    EOF"""
                 }
             }
         }
             
-        stage('Build Docker Image') {
+        stage ('Build Image') {
             steps {
-                sshagent(credentials: ["${sshkeyid}"]) {
+                sshagent([key]) {
                     sh """
-                        ssh -l ${username} ${ip} <<pwd
-                        cd ${workdir}
-                        docker build -t ${imagename}:${env.BUILD_ID} .
-                        pwd
-                    """
+                          ssh -o StrictHostkeyChecking=no ${server} << EOF
+                          cd ${dir}
+                          docker build -t ${image}:v1 .
+                          EOF"""
                 }
             }
         }
             
-        stage('Deploy Image') {
+        stage ('Deploy app') {
             steps {
-                sshagent(credentials: ["${sshkeyid}"]) {
+                sshagent([key]) {
                     sh """
-                        ssh -l ${username} ${ip} <<pwd
-                        cd ${workdir}
-                        docker compose down
-                        docker tag ${imagename}:${env.BUILD_ID} ${imagename}:latest
-                        docker compose up -d
-                        pwd
-                    """
+                          ssh -o StrictHostkeyChecking=no ${server} << EOF
+                          cd ${dir}
+                          docker compose -f ${compose} down
+                          docker compose -f ${compose} up -d
+                          EOF"""
                 }
             }
         }
 
-        stage('Push to Docker Hub') {
+        stage ('Push Docker Hub') {
             steps {
-                sshagent(credentials: ["${sshkeyid}"]) {
-			sh """
-				ssh -l ${dockerusername} ${ip} <<pwd
-				docker tag ${imagename}:${env.BUILD_ID} ${dockerusername}/${imagename}:${env.BUILD_ID}
-				docker tag ${imagename}:latest ${dockerusername}/${imagename}:latest
-				docker image push ${dockerusername}/${imagename}:latest
-				docker image push ${dockerusername}/${imagename}:${env.BUILD_ID}
-				docker image rm ${dockerusername}/${imagename}:latest
-				docker image rm ${dockerusername}/${imagename}:${env.BUILD_ID}
-				docker image rm ${imagename}:${env.BUILD_ID}
-				pwd
-			"""
-		}
+                sshagent([key]) {
+                   sh """
+	                 ssh -o StrictHostkeyChecking=no ${server} << EOF
+	                 docker image push ${duser}/${image}
+	                 EOF"""
+		      }
             }
         }
 
 
-        stage('Send Success Notification') {
+        stage ('Send Success Notification') {
             steps {
                 sh """
-                    curl -X POST 'https://api.telegram.org/bot${env.telegramapi}/sendMessage' -d \
-		    'chat_id=${env.telegramid}&text=Build ID #${env.BUILD_ID} Backend Pipeline Successful!'
-                """
+                      curl -X POST 'https://api.telegram.org/bot${env.telegramapi}/sendMessage' -d \
+		      'chat_id=${env.telegramid}&text=Build ID #${env.BUILD_ID} Backend Pipeline Successful!'
+                  """
             }
         }
 
