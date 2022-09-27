@@ -1,4 +1,4 @@
-def key = 'app'
+#def key = 'aplikasi'
 def server = "fasha1@103.183.74.5"
 def dir = "literature-backend"
 def branch = "Production"
@@ -11,11 +11,10 @@ def duser = "fasha00"
 
 pipeline {
     agent any
-
-    stages {
-        stage('set remote and pull') {
+    stages{
+        stage ('set remote and pull') {
             steps {
-                sshagent ([key]) {
+                sshagent ([aplikasi]) {
 		    sh """
                           ssh -o StrictHostkeyChecking=no ${server} << EOF
                           cd ${dir}
@@ -26,7 +25,7 @@ pipeline {
             }
         }
             
-        stage('Build Image') {
+        stage ('Build Image') {
             steps {
                 sshagent ([key]) {
                     sh """
@@ -39,7 +38,7 @@ pipeline {
             }
         }
             
-        stage('Deploy app') {
+        stage ('Deploy app') {
             steps {
                 sshagent ([key]) {
                     sh """
@@ -53,7 +52,7 @@ pipeline {
             }
         }
 
-        stage('Push Docker Hub') {
+        stage ('Push Docker Hub') {
             steps {
                 sshagent ([key]) {
                    sh """
@@ -66,7 +65,7 @@ pipeline {
         }
 
 
-        stage('Send Success Notification') {
+        stage ('Send Success Notification') {
             steps {
                 sh """
                     curl -X POST 'https://api.telegram.org/bot${env.telegramapi}/sendMessage' -d \
