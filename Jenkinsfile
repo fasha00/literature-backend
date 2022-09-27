@@ -1,5 +1,5 @@
 def key = 'backend'
-def ip = "103.186.1.224"
+def ip = "fasha3@103.186.1.224"
 def dir = "literature-backend"
 def branch = "Production"
 def image = "fasha00/literature-be:v1"
@@ -16,12 +16,12 @@ pipeline {
         stage ('set remote and pull') {
             steps {
                 sshagent(credentials: ["${key}"]) {
-		    sh """ssh -l ${username} ${ip} <<pwd
+		    sh """ssh -o StrictHostKeyChecking=no ${ip} << EOF
                     cd ${dir}
                     git remote add ${rname} ${rurl} || git remote set-url ${rname} ${rurl}
                     git pull ${rname} ${branch}
 		    exit
-                    pwd"""
+                    EOF"""
                 }
             }
         }
