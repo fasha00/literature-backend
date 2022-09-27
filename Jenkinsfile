@@ -1,4 +1,4 @@
-def key = 'app'
+def key = 'app2'
 def ip = "103.183.74.5"
 def dir = "literature-backend"
 def branch = "Production"
