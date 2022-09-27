@@ -20,7 +20,7 @@ pipeline {
                         ssh -o StrictHostkeyChecking=no ${server} << EOF
                         cd ${dir}
                         git remote add ${rname} ${rurl} || git remote set-url ${rname} ${rurl}
-                        git pull ${remotename} ${branch}
+                        git pull ${rname} ${branch}
                         EOF
                     """
                 }
