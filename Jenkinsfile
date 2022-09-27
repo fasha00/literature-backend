@@ -9,6 +9,7 @@ def rname = "origin1"
 def rurl = "git@github.com:fasha00/literature-backend.git"
 def duser = "fasha00"
 def username = "fasha1"
+
 pipeline {
     agent any
     stages{
