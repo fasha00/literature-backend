@@ -72,11 +72,7 @@ pipeline {
             steps {
                 sh """
                          curl -X POST 'https://api.telegram.org/bot${TOKEN}/sendMessage' -d \
-		        chat_id=${chatid} -d parse_mode=”HTML” -d text=”<b>Project</b>:
-		       literature-be \
-                      <b>Branch</b>:Production \
-                      <b>Build</b>:OK \
-                      <b>Test suite</b> =Passed”
+		       `chat_id=${chatid}&text=Build Number #${env.BUILD_NUMBER} literature success !'
                   """
             }
         }
