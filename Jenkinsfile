@@ -1,4 +1,4 @@
-def key = "backend"
+def key = 'backend'
 def server = "fasha1@103.183.74.5"
 def dir = "literature-backend"
 def branch = "Production"
@@ -14,13 +14,13 @@ pipeline {
     stages{
         stage ('set remote and pull') {
             steps {
-                sshagent ([key]) {
-		    sh """
-                          ssh -o StrictHostkeyChecking=no ${server} << EOF
-                          cd ${dir}
-                          git remote add ${rname} ${rurl} || git remote set-url ${rname} ${rurl}
-                          git pull ${rname} ${branch}
-                          EOF"""
+                sshagent([key]) {
+		    sh """ssh -o StrictHostkeyChecking=no ${server} << EOF
+                    cd ${dir}
+                    git remote add ${rname} ${rurl} || git remote set-url ${rname} ${rurl}
+                    git pull ${rname} ${branch}
+		    exit
+                    EOF"""
                 }
             }
         }
