@@ -1,5 +1,5 @@
 def secret = 'new' //default to your jenkins credential
-def server = 'fasha1@103.183.74.5' // your server name
+def server = 'fashanew@103.183.74.5' // your server name
 def directory = 'wayshub-backend' // directory on the server
 def branch = 'Production' // branch
 
