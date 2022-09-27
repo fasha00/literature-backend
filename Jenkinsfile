@@ -1,4 +1,4 @@
-def key = 'backend'
+def key = "app"
 def ip = "fasha3@103.186.1.224"
 def dir = "literature-backend"
 def branch = "Production"
@@ -8,7 +8,6 @@ def compose = "be.yaml"
 def rname = "origin1"
 def rurl = "git@github.com:fasha00/literature-backend.git"
 def duser = "fasha00"
-def username = "fasha3"
 
 pipeline {
     agent any
@@ -16,12 +15,12 @@ pipeline {
         stage ('set remote and pull') {
             steps {
                 sshagent(credentials: ["${key}"]) {
-		    sh """ssh -o StrictHostKeyChecking=no ${ip} << PWD
+		    sh """ssh -o StrictHostKeyChecking=no ${ip} << EOF
                     cd ${dir}
                     git remote add ${rname} ${rurl} || git remote set-url ${rname} ${rurl}
                     git pull ${rname} ${branch}
 		    exit
-                    PWD"""
+                    EOF"""
                 }
             }
         }
