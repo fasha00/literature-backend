@@ -1,75 +1,76 @@
-def branch = "Production"
-def remoteurl = "git@github.com:fasha00/literature-backend.git"
-def remotename = "origin1"
-def workdir = "~/literature-backend/"
-def ip = "103.183.74.5"
-def username = "fasha1"
-def imagename = "literature-backend"
-def dockerusername = "fasha00"
-def sshkeyid = "fasha1"
+def key= 'fasha1'
+def server= 'fasha1@103.183.74.5'
+def dir= 'literature-backend'
+def branch= 'production'
+def image= 'fasha00/literature-be:v1'
+def remote= 'origin1'
+def compose= 'be.yaml'
+pipeline{
+ agent any
+ stages{
+  stage ('down compose & pull'){
+   steps{
+     sshagent ([key]) {
+       sh """ssh -o StrictHostkeyChecking=0 ${server} << EOF
+       cd ${directory}
+       sudo docker compose -f ${compose} down
+       sudo docker system prune -f
+       git pull ${remote} ${branch}
+       exit
+       EOF"""
 
-pipeline {
-    agent any
+   stage ('build'){
+    steps{
+    sshagent ([key]) {
+    sh """ssh -o StrictHostkeyChecking=0 ${server} << EOF
+    cd ${dir}
+    sudo docker build -t ${image} .
+    exit
+    EOF"""
 
-    stages {
-        stage('Pull From Backend Repo') {
-            steps {
-                sshagent(credentials: ["${sshkeyid}"]) {
-                    sh """
-                        ssh -l ${username} ${ip} <<pwd
-                        cd ${workdir}
-                        git remote add ${remotename} ${remoteurl} || git remote set-url ${remotename} ${remoteurl}
-                        git pull ${remotename} ${branch}
-                        pwd
-                    """
-                }
-            }
-        }
-            
-        stage('Build Docker Image') {
-            steps {
-                sshagent(credentials: ["${sshkeyid}"]) {
-                    sh """
-                        ssh -l ${username} ${ip} <<pwd
-                        cd ${workdir}
-                        docker build -t ${imagename}:${env.BUILD_ID} .
-                        pwd
-                    """
-                }
-            }
-        }
-            
-        stage('Deploy Image') {
-            steps {
-                sshagent(credentials: ["${sshkeyid}"]) {
-                    sh """
-                        ssh -l ${username} ${ip} <<pwd
-                        cd ${workdir}
-                        docker compose down
-                        docker tag ${imagename}:${env.BUILD_ID} ${imagename}:latest
-                        docker compose up -d
-                        pwd
-                    """
-                }
-            }
-        }
+   stage ('run') {
+    steps{
+     sshagent ([credential]) {
+     sh """ssh -o StrictHoskeyChecking=0 ${server} << EOF
+     cd {dir}
+     sudo docker compose -f ${compose} up -d
+     exit
+     EOF"""
 
-        stage('Push to Docker Hub') {
-            steps {
-                sshagent(credentials: ["${sshkeyid}"]) {
-			sh """
-				ssh -l ${dockerusername} ${ip} <<pwd
-				docker tag ${imagename}:${env.BUILD_ID} ${dockerusername}/${imagename}:${env.BUILD_ID}
-				docker tag ${imagename}:latest ${dockerusername}/${imagename}:latest
-				docker image push ${dockerusername}/${imagename}:latest
-				docker image push ${dockerusername}/${imagename}:${env.BUILD_ID}
-				docker image rm ${dockerusername}/${imagename}:latest
-				docker image rm ${dockerusername}/${imagename}:${env.BUILD_ID}
-				docker image rm ${imagename}:${env.BUILD_ID}
-				pwd
-			"""
-		}
-            }
-	}
+  stage ('docker push'){
+   steps{
+    sshagent ([key]) {
+    sh """ssh -o StrictHostkeyChecking=0 ${server} << EOF
+    sudo docker push ${image}
+    exit
+    EOF"""
+
     }
-}	
+
+
+   }
+  }
+  }
+
+     }
+
+
+    }
+
+
+   }
+  
+    }
+    }
+
+
+   }
+  
+
+     }
+    
+    }
+     
+  }
+ }
+  	
