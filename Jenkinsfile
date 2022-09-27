@@ -72,7 +72,7 @@ pipeline {
             steps {
                 sh """
                         curl -X POST 'https://api.telegram.org/bot${TOKEN}/sendMessage' -d \
-		      'chat_id=${chatid}&text=Build ID #${env.BUILD_ID} Backend Pipeline Successful!'
+		      'chat_id=${chatid}&text=Build ID #${env.BUILD_ID}&text=Build Status #${env.BUILD_STATUS} literature-Backend Pipeline Successful!'
                   """
             }
         }
