@@ -27,7 +27,7 @@ pipeline {
             
         stage ('Build Image') {
             steps {
-                sshagent ([key]) {
+                sshagent([key]) {
                     sh """
                           ssh -o StrictHostkeyChecking=no ${server} << EOF
                           cd ${dir}
@@ -39,7 +39,7 @@ pipeline {
             
         stage ('Deploy app') {
             steps {
-                sshagent ([key]) {
+                sshagent([key]) {
                     sh """
                           ssh -o StrictHostkeyChecking=no ${server} << EOF
                           cd ${dir}
@@ -52,7 +52,7 @@ pipeline {
 
         stage ('Push Docker Hub') {
             steps {
-                sshagent ([key]) {
+                sshagent([key]) {
                    sh """
 	                 ssh -o StrictHostkeyChecking=no ${server} << EOF
 	                 docker image push ${duser}/${image}
