@@ -56,7 +56,7 @@ pipeline {
                 sshagent([key]) {
                    sh """
 	                 ssh -o StrictHostkeyChecking=no ${server} << EOF
-	                 docker image push ${duser}/${image}
+	                 docker image push ${duser}/${image}:v1
 			 exit
 	                 EOF"""
 		      }
