@@ -1,13 +1,13 @@
-def key= "app"
-def server= "fasha1@103.183.74.5"
-def dir= "literature-backend"
-def branch= "Production"
-def image= "fasha00/literature-be:v1"
-def remote= "origin1"
-def compose= "be.yaml"
-def rname= "origin1"
-def rurl= "git@github.com:fasha00/literature-backend.git"
-def duser= "fasha00"
+def key = 'app'
+def server = "fasha1@103.183.74.5"
+def dir = "literature-backend"
+def branch = "Production"
+def image = "fasha00/literature-be:v1"
+def remote = "origin1"
+def compose = "be.yaml"
+def rname = "origin1"
+def rurl = "git@github.com:fasha00/literature-backend.git"
+def duser = "fasha00"
 
 pipeline {
     agent any
