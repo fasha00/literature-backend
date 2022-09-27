@@ -32,6 +32,7 @@ pipeline {
                           ssh -o StrictHostkeyChecking=no ${server} << EOF
                           cd ${dir}
                           docker build -t ${image}:v1 .
+			  exit
                           EOF"""
                 }
             }
@@ -45,6 +46,7 @@ pipeline {
                           cd ${dir}
                           docker compose -f ${compose} down
                           docker compose -f ${compose} up -d
+			  exit
                           EOF"""
                 }
             }
@@ -56,6 +58,7 @@ pipeline {
                    sh """
 	                 ssh -o StrictHostkeyChecking=no ${server} << EOF
 	                 docker image push ${duser}/${image}
+			 exit
 	                 EOF"""
 		      }
             }
