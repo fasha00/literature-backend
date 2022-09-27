@@ -29,11 +29,10 @@ pipeline {
             steps {
                 sshagent ([key]) {
                     sh """
-                        ssh -o StrictHostkeyChecking=no ${server} << EOF
-                        cd ${wdir}
-                        docker build -t ${imagename}:v1 .
-                        EOF
-                    """
+                          ssh -o StrictHostkeyChecking=no ${server} << EOF
+                          cd ${wdir}
+                          docker build -t ${imagename}:v1 .
+                          EOF"""
                 }
             }
         }
@@ -42,12 +41,11 @@ pipeline {
             steps {
                 sshagent ([key]) {
                     sh """
-                        ssh -o StrictHostkeyChecking=no ${server} << EOF
-                        cd ${dir}
-                        docker compose -f ${compose} down
-                        docker compose -f ${compose} up -d
-                        EOF
-                    """
+                          ssh -o StrictHostkeyChecking=no ${server} << EOF
+                          cd ${dir}
+                          docker compose -f ${compose} down
+                          docker compose -f ${compose} up -d
+                          EOF"""
                 }
             }
         }
@@ -58,8 +56,7 @@ pipeline {
                    sh """
 	                 ssh -o StrictHostkeyChecking=no ${server} << EOF
 	                 docker image push ${duser}/${image}
-	                 EOF
-	             """
+	                 EOF"""
 		      }
             }
         }
@@ -68,9 +65,9 @@ pipeline {
         stage ('Send Success Notification') {
             steps {
                 sh """
-                    curl -X POST 'https://api.telegram.org/bot${env.telegramapi}/sendMessage' -d \
-		    'chat_id=${env.telegramid}&text=Build ID #${env.BUILD_ID} Backend Pipeline Successful!'
-                """
+                      curl -X POST 'https://api.telegram.org/bot${env.telegramapi}/sendMessage' -d \
+		      'chat_id=${env.telegramid}&text=Build ID #${env.BUILD_ID} Backend Pipeline Successful!'
+                  """
             }
         }
 
