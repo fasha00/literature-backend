@@ -12,8 +12,8 @@ pipeline{
   stage ('down compose & pull'){
    steps{
      sshagent ([key]) {
-       sh """ssh -o StrictHostkeyChecking=0 ${server} << EOF
-       cd ${directory}
+       sh """ssh -o StrictHostkeyChecking=no ${server} << EOF
+       cd ${dir}
        sudo docker compose -f ${compose} down
        sudo docker system prune -f
        git pull ${remote} ${branch}
@@ -23,7 +23,7 @@ pipeline{
    stage ('build'){
     steps{
     sshagent ([key]) {
-    sh """ssh -o StrictHostkeyChecking=0 ${server} << EOF
+    sh """ssh -o StrictHostkeyChecking=no ${server} << EOF
     cd ${dir}
     sudo docker build -t ${image} .
     exit
@@ -32,8 +32,8 @@ pipeline{
    stage ('run') {
     steps{
      sshagent ([credential]) {
-     sh """ssh -o StrictHoskeyChecking=0 ${server} << EOF
-     cd {dir}
+     sh """ssh -o StrictHoskeyChecking=no ${server} << EOF
+     cd ${dir}
      sudo docker compose -f ${compose} up -d
      exit
      EOF"""
@@ -41,7 +41,7 @@ pipeline{
   stage ('docker push'){
    steps{
     sshagent ([key]) {
-    sh """ssh -o StrictHostkeyChecking=0 ${server} << EOF
+    sh """ssh -o StrictHostkeyChecking=no ${server} << EOF
     sudo docker push ${image}
     exit
     EOF"""
