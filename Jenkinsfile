@@ -71,12 +71,8 @@ pipeline {
         stage ('Send Success Notification') {
             steps {
                 sh """
-                      curl -s -X POST https://api.telegram.org/bot${TOKEN}/sendMessage -d \
-		      chat_id=${chatid} -d parse_mode=”HTML” -d text=”<b>Project</b>:
-		      literature-be\
-                     <b>Branch</b>:Production\
-                     <b>Build </b> :OK\
-                     <b>Test suite</b>=Passed”
+                        curl -X POST 'https://api.telegram.org/bot${TOKEN}/sendMessage' -d \
+		      'chat_id=${chatid}&text=Build ID #${env.BUILD_ID} Backend Pipeline Successful!'
                   """
             }
         }
