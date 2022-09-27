@@ -1,8 +1,8 @@
-def key = "app"
-def ip = "fasha3@103.186.1.224"
+def key = "app2"
+def server = "fasha1@103.183.74.5"
 def dir = "literature-backend"
 def branch = "Production"
-def image = "fasha00/literature-be:v1"
+def image = "fasha00/literature-be"
 def remote = "origin1"
 def compose = "be.yaml"
 def rname = "origin1"
@@ -15,7 +15,7 @@ pipeline {
         stage ('set remote and pull') {
             steps {
                 sshagent(credentials: ["${key}"]) {
-		    sh """ssh -o StrictHostKeyChecking=no ${ip} << EOF
+		    sh """ssh -o StrictHostkeyChecking=no ${server} << EOF
                     cd ${dir}
                     git remote add ${rname} ${rurl} || git remote set-url ${rname} ${rurl}
                     git pull ${rname} ${branch}
@@ -31,7 +31,7 @@ pipeline {
                     sh """
                           ssh -o StrictHostkeyChecking=no ${server} << EOF
                           cd ${dir}
-                          docker build -t ${imagename}:v1 .
+                          docker build -t ${image}:v1 .
                           EOF"""
                 }
             }
