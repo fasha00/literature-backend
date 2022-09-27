@@ -15,7 +15,7 @@ pipeline {
     stages {
         stage('set remote and pull') {
             steps {
-                sshagent(credentials: ["${key}"]) {
+                sshagent ([key]) {
 		    sh """
                           ssh -o StrictHostkeyChecking=no ${server} << EOF
                           cd ${dir}
