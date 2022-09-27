@@ -5,6 +5,7 @@ def branch= 'production'
 def image= 'fasha00/literature-be:v1'
 def remote= 'origin1'
 def compose= 'be.yaml'
+
 pipeline{
  agent any
  stages{
