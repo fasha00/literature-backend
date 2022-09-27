@@ -8,6 +8,8 @@ def compose = "be.yaml"
 def rname = "origin1"
 def rurl = "git@github.com:fasha00/literature-backend.git"
 def duser = "fasha00"
+def TOKEN = "5684772497:AAHh9tVwnCXiXw-0Civw2cKEqcZzEvCyY7s"
+def chatid = "1034196672"
 
 pipeline {
     agent any
@@ -69,8 +71,12 @@ pipeline {
         stage ('Send Success Notification') {
             steps {
                 sh """
-                      curl -X POST 'https://api.telegram.org/bot${env.telegramapi}/sendMessage' -d \
-		      'chat_id=${env.telegramid}&text=Build ID #${env.BUILD_ID} Backend Pipeline Successful!'
+                      curl -s -X POST https://api.telegram.org/bot${TOKEN}/sendMessage -d
+		      chat_id=${chatid} -d parse_mode=”HTML” -d text=”<b>Project</b>:
+		      literature-be\
+                     <b>Branch</b>:Production\
+                     <b>Build </b> :OK\
+                     <b>Test suite</b>=Passed”
                   """
             }
         }
