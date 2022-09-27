@@ -30,7 +30,7 @@ pipeline {
                 sshagent ([key]) {
                     sh """
                           ssh -o StrictHostkeyChecking=no ${server} << EOF
-                          cd ${wdir}
+                          cd ${dir}
                           docker build -t ${imagename}:v1 .
                           EOF"""
                 }
