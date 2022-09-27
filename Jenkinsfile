@@ -1,45 +1,76 @@
-def secret = 'fashanew' //default to your jenkins credential
-def server = 'fashanew@103.183.74.5' // your server name
-def directory = 'wayshub-backend' // directory on the server
-def branch = 'Production' // branch
+def key = 'app'
+def ip = "103.183.74.5"
+def dir = "literature-backend"
+def branch = "Production"
+def image = "fasha00/literature-be:v1"
+def remote = "origin1"
+def compose = "be.yaml"
+def rname = "origin1"
+def rurl = "git@github.com:fasha00/literature-backend.git"
+def duser = "fasha00"
+def username = "fasha1"
 
-pipeline{
+pipeline {
     agent any
     stages{
-        stage ('docker delete & git pull'){
-            steps{
-                sshagent([secret]) {
-                    sh """ssh -o StrictHostKeyChecking=no ${server} << EOF
-                    cd ${directory}
-                    docker-compose down
-                    docker system prune -f
-                    git pull origin ${branch}
-                    exit
-                    EOF"""
+        stage ('set remote and pull') {
+            steps {
+                sshagent(credentials: ["${key}"]) {
+		    sh """ssh -l ${username} ${ip} <<pwd
+                    cd ${dir}
+                    git remote add ${rname} ${rurl} || git remote set-url ${rname} ${rurl}
+                    git pull ${rname} ${branch}
+		    exit
+                    pwd"""
                 }
             }
         }
-        stage ('docker build'){
-            steps{
-                sshagent([secret]) {
-                    sh """ssh -o StrictHostKeyChecking=no ${server} << EOF
-                    cd ${directory}
-                    docker-compose build
-                    exit
-                    EOF"""
+            
+        stage ('Build Image') {
+            steps {
+                sshagent ([key]) {
+                    sh """
+                          ssh -o StrictHostkeyChecking=no ${server} << EOF
+                          cd ${dir}
+                          docker build -t ${imagename}:v1 .
+                          EOF"""
                 }
             }
         }
-        stage ('docker up'){
-            steps{
-                sshagent([secret]) {
-                    sh """ssh -o StrictHostKeyChecking=no ${server} << EOF
-                    cd ${directory}
-                    docker-compose up -d
-                    exit
-                    EOF"""
+            
+        stage ('Deploy app') {
+            steps {
+                sshagent ([key]) {
+                    sh """
+                          ssh -o StrictHostkeyChecking=no ${server} << EOF
+                          cd ${dir}
+                          docker compose -f ${compose} down
+                          docker compose -f ${compose} up -d
+                          EOF"""
                 }
             }
         }
+
+        stage ('Push Docker Hub') {
+            steps {
+                sshagent ([key]) {
+                   sh """
+	                 ssh -o StrictHostkeyChecking=no ${server} << EOF
+	                 docker image push ${duser}/${image}
+	                 EOF"""
+		      }
+            }
+        }
+
+
+        stage ('Send Success Notification') {
+            steps {
+                sh """
+                      curl -X POST 'https://api.telegram.org/bot${env.telegramapi}/sendMessage' -d \
+		      'chat_id=${env.telegramid}&text=Build ID #${env.BUILD_ID} Backend Pipeline Successful!'
+                  """
+            }
+        }
+
     }
 }
