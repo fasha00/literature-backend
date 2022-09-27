@@ -9,7 +9,7 @@ def rname = "origin1"
 def rurl = "git@github.com:fasha00/literature-backend.git"
 def duser = "fasha00"
 def TOKEN = "5684772497:AAHh9tVwnCXiXw-0Civw2cKEqcZzEvCyY7s"
-def chatid = "804006874"
+def chatid = "-804006874"
 
 pipeline {
     agent any
