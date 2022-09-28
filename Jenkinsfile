@@ -7,7 +7,6 @@ def remote = "origin1"
 def compose = "be.yaml"
 def rname = "origin1"
 def rurl = "git@github.com:fasha00/literature-backend.git"
-def duser = "fasha00"
 def TOKEN = "5684772497:AAHh9tVwnCXiXw-0Civw2cKEqcZzEvCyY7s"
 def chatid = "-804006874"
 
@@ -60,7 +59,7 @@ pipeline {
                 sshagent([key]) {
                    sh """
 	                 ssh -o StrictHostkeyChecking=no ${server} << EOF
-	                 docker image push ${duser}/${image}:v1
+	                 docker image push ${image}:v1
 			 exit
 	                 EOF"""
 		      }
