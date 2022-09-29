@@ -1,0 +1,15 @@
+version: '3.8'
+services:
+   backend:
+    container_name: be
+    image: fasha00/literature-be:v1
+    stdin_open: true
+    ports:
+     - 5000:5000
+
+   backend2:
+    container_name: be2
+    image: fasha00/literature-be:v1
+    stdin_open: true
+    ports:
+     - 5100:5000
