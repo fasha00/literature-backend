@@ -64,7 +64,7 @@ pipeline {
         }
 
 
-        stage ('Send Success Notification') {
+        stage ('push notification') {
             steps {
                 sh """
                         curl -X POST 'https://api.telegram.org/bot${TOKEN}/sendMessage' -d \
