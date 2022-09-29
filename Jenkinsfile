@@ -13,9 +13,9 @@ def chatid = "-804006874"
 pipeline {
     agent any
     stages{
-        stage ('set remote and pull') {
+        stage ('set git remote and pull app') {
             steps {
-                sshagent(credentials: ["${key}"]) {
+                sshagent([key]) {
 		    sh """ssh -T -o StrictHostkeyChecking=no ${server} << EOF
                     cd ${dir}
                     git remote add ${rname} ${rurl} || git remote set-url ${rname} ${rurl}
@@ -26,11 +26,10 @@ pipeline {
             }
         }
             
-        stage ('Build Image') {
+        stage ('build image') {
             steps {
                 sshagent([key]) {
-                    sh """
-                          ssh -o StrictHostkeyChecking=no ${server} << EOF
+                    sh """ssh -o StrictHostkeyChecking=no ${server} << EOF
                           cd ${dir}
                           docker build -t ${image}:v1 .
 			  exit
@@ -39,11 +38,10 @@ pipeline {
             }
         }
             
-        stage ('Deploy app') {
+        stage ('deploy app') {
             steps {
                 sshagent([key]) {
-                    sh """
-                          ssh -o StrictHostkeyChecking=no ${server} << EOF
+                    sh """ssh -o StrictHostkeyChecking=no ${server} << EOF
                           cd ${dir}
 			  docker compose -f ${compose} down
 			  docker system prune -f
@@ -54,11 +52,10 @@ pipeline {
             }
         }
 
-        stage ('Push Docker Hub') {
+        stage ('push docker') {
             steps {
                 sshagent([key]) {
-                   sh """
-	                 ssh -o StrictHostkeyChecking=no ${server} << EOF
+                   sh """ssh -o StrictHostkeyChecking=no ${server} << EOF
 	                 docker image push ${image}:v1
 			 exit
 	                 EOF"""
