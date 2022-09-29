@@ -14,7 +14,7 @@
     "dialect": "mysql"
   },
   "production": {
-    "use_env_variable": "POSTGRES://fasha:fasha123@103.183.74.5/literature",
+    "use_env_variable": "DATABASE_URL",
     "dialect": "postgres",
     "protocol": "postgres"
   }
