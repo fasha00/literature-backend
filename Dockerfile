@@ -4,7 +4,7 @@ COPY . .
 ENV DATABASE_URL POSTGRES://fasha:fasha123@103.183.74.5/literature
 ENV NODE_ENV production
 RUN npm install
-RUN npm run build
+RUN npm build
 RUN npm install -g serve
 RUN serve -s build
 RUN npm install -g sequelize-cli
