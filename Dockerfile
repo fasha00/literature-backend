@@ -6,6 +6,6 @@ ENV NODE_ENV production
 RUN npm install
 RUN npm i -g pnpm
 RUN npm install -g sequelize-cli
-RUN npx sequelize db:migrate
+RUN npx sequelize db:migrate --env=production
 EXPOSE 5000
 CMD ["pnpm", "start"]
