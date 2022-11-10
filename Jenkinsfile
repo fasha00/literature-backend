@@ -1,5 +1,5 @@
 def key = "app"
-def server = "aldo@108.136.167.1"
+def server = "fasha@108.136.167.1"
 def dir = "literature-backend"
 def branch = "Production"
 def image = "fasha00/literature-be"
